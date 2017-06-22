@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<title>Sistema de Reserva de Salas</title>
+	<link type="text/css" rel="stylesheet" href="index.css" />
+	<script type="text/javascript" src="jquery-1.11.2.min.js" /></script>
+	<script type="text/javascript" src="labtrans.js" /></script>
+</head>
+<body>
+	<p class="titulo">Bem vindo ao Sistema de Reserva de Salas</p>
+	<table class="tabela" id="lista">
+		<tr>
+			<th>Local</th>
+			<th>Sala</th>
+			<th>Responsável pela reserva</th>
+			<th>Início</th>
+			<th>Término</th>
+		</tr>
+	</table>
+	<div>
+		
+	</div>
+	<table>
+		<tr>
+			<td><select id="locais"></select></td>
+			<td><select id="salas"></select></td>
+			<td><input type="text" name="responsavel"></td>
+			<td><input type="text" name="inicio"></td>
+			<td><input type="text" name="termino"></td>
+		</tr>
+	</table>
+	<div class="button_panel">
+		<a href="#" class="button">Incluir reserva</a>
+		<a href="#" class="button">Alterar reserva</a>
+	</div>
+</body>
+</html>

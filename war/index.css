@@ -1,0 +1,18 @@
+.titulo{
+	text-align:center;
+}
+
+.button_panel{
+	display:inline-block;
+	margin-top:20px;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 20px 5px;
+}
+
+th {
+    text-align:left;
+    border-bottom:1px solid #000000;
+}
