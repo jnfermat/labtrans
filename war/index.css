@@ -59,3 +59,12 @@ th {
 .save-cancel a{
 	margin-right:20px;
 }
+
+.hr-border{
+	border:1px solid #aaaaaa;
+	display:inline-block;
+}
+
+.row-data{
+	margin-top:5px;
+}

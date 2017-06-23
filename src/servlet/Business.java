@@ -34,8 +34,8 @@ public class Business {
 		
 		while ( rs.next() ){
 			JSONObject jsonObj = new JSONObject();
-			jsonObj.put("idLocal", String.valueOf( rs.getInt("id_sala") ) );
-			jsonObj.put("nmLocal", rs.getString("nm_sala") );
+			jsonObj.put("idSala", String.valueOf( rs.getInt("id_sala") ) );
+			jsonObj.put("nmSala", rs.getString("nm_sala") );
 
 			jsonArray.add( jsonObj );
 		}
@@ -44,7 +44,7 @@ public class Business {
 	}
 	
 	public static JSONArray getReservas(Connection conn) throws SQLException{	
-		String select = "select r.id_reserva, l.nm_local, r.id_sala, s.nm_sala, r.nm_responsavel, r.dt_inicio, r.dt_termino";
+		String select = "select r.id_reserva, l.id_local, l.nm_local, r.id_sala, s.nm_sala, r.nm_responsavel, r.dt_inicio, r.dt_termino";
     	String from = " from reserva r inner join sala s on (r.id_sala = s.id_sala) inner join local l on (s.id_local = l.id_local)";
 
     	ResultSet rs = Utils.getData( conn, select + from );
@@ -52,6 +52,7 @@ public class Business {
     	JSONArray jsonArray = new JSONArray();
     	
     	Integer idSala = null;
+    	Integer idLocal = null;
     	Integer idReserva = null;
     	String nmResponsavel = null;
     	String nmSala = null;
@@ -62,6 +63,7 @@ public class Business {
     	while ( rs.next() ){
     		
     		idSala = rs.getInt("id_sala");
+    		idLocal = rs.getInt("id_local");
     		idReserva = rs.getInt("id_reserva");
     		nmSala = rs.getString("nm_sala");
     		nmLocal = rs.getString("nm_local");
@@ -71,6 +73,7 @@ public class Business {
     		
     		JSONObject jsonObj = new JSONObject();
     		jsonObj.put("idSala", String.valueOf(idSala) );
+    		jsonObj.put("idLocal", String.valueOf(idLocal) );
     		jsonObj.put("idReserva", String.valueOf(idReserva) );
     		jsonObj.put("nmLocal", nmLocal );
     		jsonObj.put("nmSala", nmSala );
@@ -93,5 +96,10 @@ public class Business {
 			e.printStackTrace();
 		} 
 		return (result > 0);
+	}
+
+	public static boolean writeReserva(Connection conn, ModelReserva modelReserva) {
+		
+		return modelReserva.update(conn);
 	}
 }

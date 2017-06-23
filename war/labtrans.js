@@ -40,10 +40,50 @@ $(document).ready(function(e){
 		
 		var row_table = $('#row_table').val();
 		changeBackground(row_table, '#ffffff');
+		
+		if ( $(this).attr("id") == "btn_save" ){
+			saveReserva();
+		}
 	});
 	
 	$("#data_edit").hide();
 });
+
+function saveReserva(){
+	var idReserva = $("#id_reserva").val();
+	var idSala = $("#salas").val();
+	var responsavel = $("#responsavel").val();
+	var dtIni = $("#year_ini").val() + "-" + $("#month_ini").val() + "-" + $("#day_ini").val() + " " + $("#hr_ini").val() + ":" + $("#min_ini").val() + ":00";
+	var dtFim = $("#year_fim").val() + "-" + $("#month_fim").val() + "-" + $("#day_fim").val() + " " + $("#hr_fim").val() + ":" + $("#min_fim").val() + ":00";
+
+	var dataString = "action=write" + 
+					"&idReserva=" + idReserva +
+					"&idSala=" + idSala +
+					"&responsavel=" + responsavel +
+					"&dtIni=" + dtIni +
+					"&dtFim=" + dtFim;
+	
+	$.ajax({
+        type: "POST",
+        headers: { "cache-control": "no-cache" },
+        url: "Controller",
+		async: false,
+		cache: false,
+        dataType: "json",
+        data: dataString,
+        
+        success: function( data, textStatus, jqXHR) {
+        	if ( !data.sucess ){
+        		alert("Não foi possível salvar os dados!");
+        	}        	
+        },
+       
+        error: function(jqXHR, textStatus, errorThrown){
+             console.log("Something really bad happened " + textStatus);
+             alert("Não foi possível salvar os dados!");
+        }
+    });	
+}
 
 function changeBackground(row_table, color){
 	if ( row_table != undefined && row_table != "" ){
@@ -69,13 +109,15 @@ function fillReservas(){
         	
         	for(var r = 0; r < data.length; r++){
         		$("#lista").append( "<tr>" + 
-					        		"<td>" + data[r].nmLocal + "</td>" + 
+					        		"<td>" + data[r].nmLocal + "</td>" +
 					        		"<td>" + data[r].nmSala + "</td>" + 
 					        		"<td>" + data[r].nmResponsavel + "</td>" + 
 					        		"<td>" + data[r].dtInicio + "</td>" + 
 					        		"<td>" + data[r].dtTermino + "</td>" + 
 					        		"<td><a href='#'" + " id='delete_" + data[r].idReserva + "_" + (r+1) + "'><img src='images/icons/delete.png' width=12></a></td>" +
 					        		"<td><a href='#'" + " id='edit_" + data[r].idReserva  + "_" + (r+1) + "'><img src='images/icons/edit.png' width=12></a></td>" +
+					        		"<td>" + '<input type="hidden" value="' + data[r].idLocal + '">'+ "</td>" +
+					        		"<td>" + '<input type="hidden" value="' + data[r].idSala + '">'+ "</td>" +
 					        		"</tr>" );
         	}
         	
@@ -146,7 +188,7 @@ function fillLocais(){
     });
 }
 
-function fillSalas( id_local ){
+function fillSalas( id_local, id_sala ){
 	var dataString = "action=read&what=getListSala&id_local=" + id_local;
 	
 	$.ajax({
@@ -159,7 +201,11 @@ function fillSalas( id_local ){
         success: function( data, textStatus, jqXHR) {
         	$("#salas").empty();
         	for(var r = 0; r < data.length; r++){
-        		$("#salas").append('<option value="' + data[r].idLocal + '">' + data[r].nmLocal + '</option>');
+        		if ( id_sala == undefined || (id_sala != undefined && id_sala != data[r].idSala) ){
+        			$("#salas").append('<option value="' + data[r].idSala + '">' + data[r].nmSala + '</option>');
+        		} else if ( id_sala == data[r].idSala ){
+        			$("#salas").append('<option selected value="' + data[r].idSala + '">' + data[r].nmSala + '</option>');
+        		}
         	}
         },
        
@@ -195,7 +241,35 @@ function executeOperation( operation, id_reserva, row_table ){
 			deleteReserva( id_reserva );
 	} else if ( operation == "edit" || operation == "insert"){
 		$("#data_edit").show();
+		fillDataEdit(id_reserva, row_table);
 	}
+}
+
+function fillDataEdit( id_reserva, row_table ){
+	var rows = document.getElementById("lista").rows;
+	var idLocal = $(rows[row_table].cells[7].innerHTML).val();
+	var idSala = $(rows[row_table].cells[8].innerHTML).val();
+	
+	$('#locais').val( idLocal );
+	fillSalas( idLocal, idSala );
+	
+	var dtInicio = rows[row_table].cells[3].innerHTML;
+	var dtTermino = rows[row_table].cells[4].innerHTML;
+	var responsavel = rows[row_table].cells[2].innerHTML;
+	
+	$('#responsavel').val( responsavel );
+	
+	$('#day_ini').val( parseInt(dtInicio.substr(0,2)) );
+	$('#month_ini').val( parseInt(dtInicio.substr(3,2)) );
+	$('#year_ini').val( parseInt(dtInicio.substr(6,4)) );
+	$('#hr_ini').val( dtInicio.substr(11,2) );
+	$('#min_ini').val( dtInicio.substr(14,2) );
+	
+	$('#day_fim').val( parseInt(dtTermino.substr(0,2)) );
+	$('#month_fim').val( parseInt(dtTermino.substr(3,2)) );
+	$('#year_fim').val( parseInt(dtTermino.substr(6,4)) );
+	$('#hr_fim').val( dtTermino.substr(11,2) );
+	$('#min_fim').val( dtTermino.substr(14,2) );	
 }
 
 function deleteReserva( id_reserva ){
@@ -248,16 +322,12 @@ function fillPeriodos(){
 	var currentYear = currentTime.getFullYear();
 	
 	for(var d=1; d < 32; d++){
-		if ( d >= currentDay )
-			$("#day_ini").append('<option value="' + d + '">' + d + '</option>');
-		
+		$("#day_ini").append('<option value="' + d + '">' + d + '</option>');
 		$("#day_fim").append('<option value="' + d + '">' + d + '</option>');
 	}
 	
 	for(var m=1; m < 13; m++){
-		if ( m >= currentMonth )
-			$("#month_ini").append('<option value="' + m + '">' + arrayMonth[m - 1] + '</option>');
-		
+		$("#month_ini").append('<option value="' + m + '">' + arrayMonth[m - 1] + '</option>');
 		$("#month_fim").append('<option value="' + m + '">' + arrayMonth[m - 1] + '</option>');
 	}
 	

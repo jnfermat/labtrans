@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -11,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 /**
  * Servlet implementation class Consulta
@@ -63,6 +66,24 @@ public class Controller extends HttpServlet {
 	    		} else if ( "delete".equals( action ) ){
     	    		String idReserva = request.getParameter("idReserva");
     	    		boolean result = Business.deleteReserva( conn, idReserva );
+    	    	} else if ( "write".equals( action ) ){
+    	    		String idReserva = request.getParameter("idReserva");
+    	    		String idSala = request.getParameter("idSala");
+    	    		String responsavel = request.getParameter("responsavel");
+    	    		String dtIni = request.getParameter("dtIni");
+    	    		String dtFim = request.getParameter("dtFim");
+    	    		
+    	    		ModelReserva modelReserva = new ModelReserva();
+    	    		modelReserva.setDtInicio( Timestamp.valueOf(dtIni) );
+    	    		modelReserva.setDtTermino( Timestamp.valueOf(dtFim) );
+    	    		modelReserva.setIdReserva( Integer.parseInt(idReserva) );
+    	    		modelReserva.setIdSala( Integer.parseInt(idSala) );
+    	    		modelReserva.setNmResponsavel( responsavel );
+    	    		
+    	    		boolean result = Business.writeReserva( conn, modelReserva );
+    	    		JSONObject jsonObj = new JSONObject();
+    				jsonObj.put("sucess", result );
+    				jsonArray.add( jsonObj );
     	    	}
 	    	}
 	    } catch (SQLException e) {
@@ -78,9 +99,12 @@ public class Controller extends HttpServlet {
 		}
 		
 	    PrintWriter out = response.getWriter();	    
+    	response.setContentType("application/json");
+    	
 	    if ( action != null && "read".equals(action) ){
-	    	response.setContentType("application/json");
 		    out.write( jsonArray.toJSONString() );
+	    } else if ( action != null && "write".equals(action) ){
+		    out.write( jsonArray.get(0).toString() );
 	    }
 
 		out.close();

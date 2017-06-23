@@ -21,7 +21,7 @@
 		</table>
 		
 		<div id="data_edit">
-			<div>
+			<div class="row-data">
 				<input type="hidden" id="id_reserva">
 				<input type="hidden" id="row_table">
 				
@@ -32,23 +32,23 @@
 					Sala: <select id="salas"></select>
 				</div>
 				<div class="data-edit">
-					Responsável: <input class="responsavel" type="text" name="responsavel" maxlength=100>
+					Responsável: <input class="responsavel" type="text" id="responsavel" maxlength=100>
 				</div>
 			</div>
-			<div>
+			<div class="row-data">
 				<div class="data-edit">
 					Início: <select id="day_ini"></select> / <select id="month_ini"></select> / <select id="year_ini"></select>
 				</div>
 				<div class="data-edit">
-					Hora: <input class=time type="text" name="hr_inicio" maxlength=2>:<input class=time type="text" name="min_inicio" maxlength=2>
+					Hora: <div class="hr-border"><input class=time type="text" id="hr_ini" maxlength=2>:<input class=time type="text" id="min_ini" maxlength=2></div>
 				</div>
 			</div>
-			<div>
+			<div class="row-data">
 				<div class="data-edit">
 					Término: <select id="day_fim"></select> / <select id="month_fim"></select> / <select id="year_fim"></select>
 				</div>
 				<div class="data-edit">
-					Hora: <input class="time" type="text" name="hr_termino" maxlength=2>:<input class=time type="text" name="min_termino" maxlength=2>
+					Hora: <div class="hr-border"><input class="time" type="text" id="hr_fim" maxlength=2>:<input class=time type="text" id="min_fim" maxlength=2></div>
 				</div>
 			</div>
 			
