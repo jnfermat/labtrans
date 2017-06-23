@@ -1,18 +1,61 @@
 .titulo{
-	text-align:center;
+	font-weight:bold;
+	margin-left:20px;
+	font-size:20px;
 }
 
 .button_panel{
 	display:inline-block;
 	margin-top:20px;
+	margin-left:20px;
+}
+
+.button_panel img,#data_edit img{
+	margin-right:3px;
 }
 
 table {
     border-collapse: separate;
     border-spacing: 20px 5px;
+    border-bottom: 1px solid #000000;
 }
 
 th {
     text-align:left;
     border-bottom:1px solid #000000;
+}
+
+.button{
+	text-decoration:none;
+}
+
+.data-edit{
+	display:inline-block;
+	margin-left:20px;
+}
+ 
+#data_edit{
+	margin-top:20px;
+}
+
+.date{
+	width:80px;
+}
+
+.time{
+	width:16px;
+	border:none;
+}
+
+.responsavel{
+	width:300px;
+}
+
+.save-cancel{
+	margin-top:20px;
+	margin-left:20px;
+}
+
+.save-cancel a{
+	margin-right:20px;
 }

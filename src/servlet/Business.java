@@ -3,6 +3,7 @@ package servlet;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
@@ -80,5 +81,17 @@ public class Business {
 
     	}
 		return jsonArray;
+	}
+
+	public static boolean deleteReserva(Connection conn, String idReserva) {
+   		Statement stm = null;
+   		int result = 0;
+		try {
+	    	stm = conn.createStatement();
+	    	result = stm.executeUpdate( "delete reservas where id_reserva = " + idReserva );
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+		return (result > 0);
 	}
 }

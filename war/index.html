@@ -8,31 +8,64 @@
 	<script type="text/javascript" src="labtrans.js" /></script>
 </head>
 <body>
-	<p class="titulo">Bem vindo ao Sistema de Reserva de Salas</p>
-	<table class="tabela" id="lista">
-		<tr>
-			<th>Local</th>
-			<th>Sala</th>
-			<th>Responsável pela reserva</th>
-			<th>Início</th>
-			<th>Término</th>
-		</tr>
-	</table>
-	<div>
+	<div class="main">
+		<p class="titulo">Sistema de Reserva de Salas</p>
+		<table class="tabela" id="lista">
+			<tr>
+				<th>Local</th>
+				<th>Sala</th>
+				<th>Responsável pela reserva</th>
+				<th>Início</th>
+				<th>Término</th>
+			</tr>
+		</table>
 		
-	</div>
-	<table>
-		<tr>
-			<td><select id="locais"></select></td>
-			<td><select id="salas"></select></td>
-			<td><input type="text" name="responsavel"></td>
-			<td><input type="text" name="inicio"></td>
-			<td><input type="text" name="termino"></td>
-		</tr>
-	</table>
-	<div class="button_panel">
-		<a href="#" class="button">Incluir reserva</a>
-		<a href="#" class="button">Alterar reserva</a>
+		<div id="data_edit">
+			<div>
+				<input type="hidden" id="id_reserva">
+				<input type="hidden" id="row_table">
+				
+				<div class="data-edit">
+					Local: <select id="locais"></select>
+				</div>
+				<div class="data-edit">
+					Sala: <select id="salas"></select>
+				</div>
+				<div class="data-edit">
+					Responsável: <input class="responsavel" type="text" name="responsavel" maxlength=100>
+				</div>
+			</div>
+			<div>
+				<div class="data-edit">
+					Início: <select id="day_ini"></select> / <select id="month_ini"></select> / <select id="year_ini"></select>
+				</div>
+				<div class="data-edit">
+					Hora: <input class=time type="text" name="hr_inicio" maxlength=2>:<input class=time type="text" name="min_inicio" maxlength=2>
+				</div>
+			</div>
+			<div>
+				<div class="data-edit">
+					Término: <select id="day_fim"></select> / <select id="month_fim"></select> / <select id="year_fim"></select>
+				</div>
+				<div class="data-edit">
+					Hora: <input class="time" type="text" name="hr_termino" maxlength=2>:<input class=time type="text" name="min_termino" maxlength=2>
+				</div>
+			</div>
+			
+			<div class="save-cancel">
+				<a href="#" class="button" id="btn_save">
+					<img src="images/icons/save.png" width=12>Salvar
+				</a>
+				<a href="#" class="button" id="btn_cancel">
+					<img src="images/icons/cancel.png" width=12>Cancelar
+				</a>
+			</div>
+		</div>
+		<div class="button_panel">
+			<a href="#" class="button" id="btn_insert">
+				<img src="images/icons/add.png" width=12>Incluir reserva
+			</a>
+		</div>
 	</div>
 </body>
 </html>

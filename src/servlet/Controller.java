@@ -19,48 +19,27 @@ import org.json.simple.JSONArray;
 public class Controller extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
     public Controller() {
         super();
-        // TODO Auto-generated constructor stub
     }
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		//response.getWriter().append("Served at: ").append(request.getContextPath());
-		this.processRequest(request, response);
+		processRequest(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		doGet(request, response);
+		processRequest(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doPut(HttpServletRequest, HttpServletResponse)
-	 */
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		this.processRequest(request, response);
+		processRequest(request, response);
 	}
 
-	/**
-	 * @see HttpServlet#doDelete(HttpServletRequest, HttpServletResponse)
-	 */
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		this.processRequest(request, response);
+		processRequest(request, response);
 	}
 
-	protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException
+	private void processRequest(HttpServletRequest request, HttpServletResponse response) throws IOException
 	{ 
 		String action = request.getParameter("action");
 
@@ -69,13 +48,22 @@ public class Controller extends HttpServlet {
 
 	    try 
 	    {
-	    	if ( action != null && "getReservas".equals(action) ){
-	    		jsonArray = Business.getReservas( conn );
-	    	} else if ( action != null && "getListLocal".equals(action) ){
-	    		jsonArray = Business.getListLocal( conn );
-	    	} else if ( action != null && "getListSala".equals(action) ){
-	    		String id_local = request.getParameter("id_local");
-	    		jsonArray = Business.getListSala( conn, id_local );
+	    	if ( action != null ){
+	    		action = action.trim().toLowerCase();
+	    		String what = request.getParameter("what");
+	    		if ( "read".equals(action) ){
+	    			if ( "getReservas".equals( what ) ){
+	    	    		jsonArray = Business.getReservas( conn );
+	    	    	} else if ( "getListLocal".equals( what ) ){
+	    	    		jsonArray = Business.getListLocal( conn );
+	    	    	} else if ( "getListSala".equals( what ) ){
+	    	    		String id_local = request.getParameter("id_local");
+	    	    		jsonArray = Business.getListSala( conn, id_local );
+	    	    	} 
+	    		} else if ( "delete".equals( action ) ){
+    	    		String idReserva = request.getParameter("idReserva");
+    	    		boolean result = Business.deleteReserva( conn, idReserva );
+    	    	}
 	    	}
 	    } catch (SQLException e) {
 			e.printStackTrace();
@@ -89,10 +77,12 @@ public class Controller extends HttpServlet {
 			}
 		}
 		
-		response.setContentType("application/json");
-	    PrintWriter out = response.getWriter();
-	    
-	    out.write( jsonArray.toJSONString() );
+	    PrintWriter out = response.getWriter();	    
+	    if ( action != null && "read".equals(action) ){
+	    	response.setContentType("application/json");
+		    out.write( jsonArray.toJSONString() );
+	    }
+
 		out.close();
 	}
 }
