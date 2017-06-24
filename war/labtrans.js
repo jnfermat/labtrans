@@ -52,7 +52,25 @@ $(document).ready(function(e){
 		clearDataEdit();
 	});
 	
+	$('#cafe').on('change', function(e){
+		if ( $(this).is(':checked') )
+			$('#div_nr_pessoas').show();
+		else
+			$('#div_nr_pessoas').hide();
+	});
+		
 	$("#data_edit").hide();
+	
+	var myTable = document.getElementById('lista');
+	var rows =  myTable.rows;
+	var firstRow = rows[0];
+	var secondRow = rows[1];
+	var cellsFirstRow = rows[0].cells;
+	var cellsSecondRow = rows[1].cells;
+	
+	for(var c=0; c < 5; c++)
+		$(cellsFirstRow[c]).width( $(cellsSecondRow[c]).width() );
+
 });
 
 function clearDataEdit(){
@@ -377,6 +395,7 @@ function fillPeriodos(){
 function validate(){
 	var idSala = $('#salas').val();
 	var nmResponsavel = $('#responsavel').val();
+	var descricao = $('#descricao').val();
 	var result = true;
 	
 	if ( idSala == null || idSala == "" ){
@@ -385,6 +404,12 @@ function validate(){
 	} else if ( nmResponsavel == null || nmResponsavel == "" ){
 		result = false;
 		alert("Você deve informar o nome do responsável.");
+	} else if ( descricao == null || descricao == "" ){
+		result = false;
+		alert("Você deve informar a descrição.");
+	} else if ( $('#cafe').is(':checked') && $('#nr_pessoas').val() == "" ){
+		result = false;
+		alert("Você deve informar o número de pessoas.");
 	}
 	
 	return result;

@@ -14,12 +14,6 @@
 	margin-right:3px;
 }
 
-table {
-    border-collapse: separate;
-    border-spacing: 20px 5px;
-    border-bottom: 1px solid #000000;
-}
-
 th {
     text-align:left;
     border-bottom:1px solid #000000;
@@ -42,11 +36,6 @@ th {
 	width:80px;
 }
 
-.time{
-	width:16px;
-	border:none;
-}
-
 .responsavel{
 	width:300px;
 }
@@ -60,11 +49,25 @@ th {
 	margin-right:20px;
 }
 
-.hr-border{
-	border:1px solid #aaaaaa;
-	display:inline-block;
-}
-
 .row-data{
 	margin-top:5px;
+}
+
+#nr_pessoas{
+	width:16px;
+}
+
+thead,tbody{
+	display:block;	
+}
+
+tbody {
+    height: 300px;
+    overflow: auto;
+}
+
+table {
+    border-collapse: separate;
+    border-spacing: 20px 5px;
+    border-bottom: 1px solid #000000;
 }

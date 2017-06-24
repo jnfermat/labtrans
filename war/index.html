@@ -11,14 +11,17 @@
 	<div class="main">
 		<p class="titulo">Sistema de Reserva de Salas</p>
 		<table class="tabela" id="lista">
-			<tr>
-				<th>Local</th>
-				<th>Sala</th>
-				<th>Responsável pela reserva</th>
-				<th>Início</th>
-				<th>Término</th>
-			</tr>
+			<thead>
+				<tr>
+					<th>Local</th>
+					<th>Sala</th>
+					<th>Responsável pela reserva</th>
+					<th>Início</th>
+					<th>Término</th>
+				</tr>
+			</thead>
 		</table>
+
 		
 		<div id="data_edit">
 			<div class="row-data">
@@ -51,7 +54,17 @@
 					Hora: <select id="horario_fim"></select>
 				</div>
 			</div>
-			
+			<div class="row-data">
+				<div class="data-edit">
+					Descrição: <input class="responsavel" type="text" id="descricao" maxlength=100>
+				</div>			
+				<div class="data-edit">
+					<input type="checkbox" id="cafe">Com café
+				</div>
+				<div class="data-edit" id="div_nr_pessoas" style="display:none" >
+					N° pessoas: <input type="text" id="nr_pessoas" maxlength=2>
+				</div>
+			</div>
 			<div class="save-cancel">
 				<a href="#" class="button" id="btn_save">
 					<img src="images/icons/save.png" width=12>Salvar
