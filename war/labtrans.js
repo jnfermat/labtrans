@@ -35,27 +35,37 @@ $(document).ready(function(e){
 	});	
 	
 	$('#btn_save,#btn_cancel').on('click', function(e){
-		$("#data_edit").hide();
-		$('#btn_insert').show();
-		
 		var row_table = $('#row_table').val();
 		changeBackground(row_table, '#ffffff');
 		
 		if ( $(this).attr("id") == "btn_save" ){
-			var action = parseInt($('#id_reserva').val()) > 0 ? 'write' : 'insert';
-			saveReserva( action );
+			if ( validate() ){
+				var action = parseInt($('#id_reserva').val()) > 0 ? 'write' : 'insert';
+				saveReserva( action );
+				fillReservas();
+			}else{
+				return;
+			}
 		}
+		$("#data_edit").hide();
+		$('#btn_insert').show();
+		clearDataEdit();
 	});
 	
 	$("#data_edit").hide();
 });
 
+function clearDataEdit(){
+	$("#responsavel").val("");
+
+}
+
 function saveReserva(action){
 	var idReserva = $("#id_reserva").val();
 	var idSala = $("#salas").val();
 	var responsavel = $("#responsavel").val();
-	var dtIni = $("#year_ini").val() + "-" + $("#month_ini").val() + "-" + $("#day_ini").val() + " " + $("#hr_ini").val() + ":" + $("#min_ini").val() + ":00";
-	var dtFim = $("#year_fim").val() + "-" + $("#month_fim").val() + "-" + $("#day_fim").val() + " " + $("#hr_fim").val() + ":" + $("#min_fim").val() + ":00";
+	var dtIni = $("#year_ini").val() + "-" + $("#month_ini").val() + "-" + $("#day_ini").val() + " " + $("#horario_ini option:selected").text() + ":00";
+	var dtFim = $("#year_fim").val() + "-" + $("#month_fim").val() + "-" + $("#day_fim").val() + " " + $("#horario_fim option:selected").text() + ":00";
 
 	var dataString = "action=" + action +
 					"&idReserva=" + idReserva +
@@ -105,9 +115,11 @@ function fillReservas(){
         dataType: "json",
         data: dataString,
         
-        //if received a response from the server
         success: function( data, textStatus, jqXHR) {
-        	
+        	for(var i=document.getElementById("lista").rows.length - 1; i > 0; i--){
+        		document.getElementById("lista").deleteRow(i);
+        	}
+
         	for(var r = 0; r < data.length; r++){
         		$("#lista").append( "<tr>" + 
 					        		"<td>" + data[r].nmLocal + "</td>" +
@@ -244,8 +256,10 @@ function executeOperation( operation, id_reserva, row_table ){
 		$("#data_edit").show();
 		if ( operation == "edit" )
 			fillDataEdit(id_reserva, row_table);
-		else
+		else{
 			$('#id_reserva').val('0');
+			setPeriodosInitial();
+		}
 	}
 }
 
@@ -318,12 +332,24 @@ function deleteReserva( id_reserva ){
     });
 }
 
-function fillPeriodos(){
-	var arrayMonth = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+function setPeriodosInitial(){
 	var currentTime = new Date();
 	var currentDay = currentTime.getDate();
 	var currentMonth = currentTime.getMonth() + 1;
 	var currentYear = currentTime.getFullYear();
+	
+	$("#day_ini").val(currentDay);
+	$("#day_fim").val(currentDay);
+	
+	$("#month_ini").val(currentMonth);
+	$("#month_fim").val(currentMonth);
+		
+	$('#horario_ini').val( currentTime.getHours() );
+	$('#horario_fim').val( currentTime.getHours()+1 );
+}
+
+function fillPeriodos(){
+	var arrayMonth = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 	
 	for(var d=1; d < 32; d++){
 		$("#day_ini").append('<option value="' + d + '">' + d + '</option>');
@@ -335,13 +361,31 @@ function fillPeriodos(){
 		$("#month_fim").append('<option value="' + m + '">' + arrayMonth[m - 1] + '</option>');
 	}
 	
+	var currentTime = new Date();
+	var currentYear = currentTime.getFullYear();
 	for(var y=currentYear; y < currentYear+10; y++){
 		$("#year_ini").append('<option value="' + y + '">' + y + '</option>');
 		$("#year_fim").append('<option value="' + y + '">' + y + '</option>');
 	}
 	
-	$('input[name=hr_inicio').val( currentTime.getHours() );
-	$('input[name=min_inicio').val( "00" );
-	$('input[name=hr_termino').val( "00" );
-	$('input[name=min_termino').val( "00" );	
+	for(var h=0; h < 24; h++){
+		$("#horario_ini").append('<option value="' + h + '">' + (h < 10 ? '0'+h+':00' : h+':00') + '</option>');
+		$("#horario_fim").append('<option value="' + h + '">' + (h < 10 ? '0'+h+':00' : h+':00') + '</option>');
+	}	
+}
+
+function validate(){
+	var idSala = $('#salas').val();
+	var nmResponsavel = $('#responsavel').val();
+	var result = true;
+	
+	if ( idSala == null || idSala == "" ){
+		result = false;
+		alert("Você deve informar a sala.");
+	} else if ( nmResponsavel == null || nmResponsavel == "" ){
+		result = false;
+		alert("Você deve informar o nome do responsável.");
+	}
+	
+	return result;
 }
