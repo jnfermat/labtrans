@@ -12,18 +12,43 @@ public class ModelReserva {
 	private static final String NM_RESPONSAVEL = "reserva.nm_responsavel";
 	private static final String DT_INICIO = "reserva.dt_inicio";
 	private static final String DT_TERMINO = "reserva.dt_termino";
+	private static final String DESCRICAO = "reserva.descricao";
+	private static final String NR_PESSOAS = "reserva.nr_pessoas";
+	private static final String CAFE = "reserva.cafe";
+	
 	public static final String STATUS_NEW = "NEW";
 	public static final String STATUS_MODIFED = "MODIFED";
 	
 	private int idReserva;
 	private int idSala;
 	private String nmResponsavel;
+	private String descricao;
 	private Timestamp dtInicio;
 	private Timestamp dtTermino;
+	private String cafe;
+	private int nrPessoas;
 	
 	private String statusModel = STATUS_NEW;
 	
 
+	public String getDescricao() {
+		return descricao;
+	}
+	public void setDescricao(String descricao) {
+		this.descricao = descricao;
+	}
+	public String getCafe() {
+		return cafe;
+	}
+	public void setCafe(String cafe) {
+		this.cafe = cafe;
+	}
+	public int getNrPessoas() {
+		return nrPessoas;
+	}
+	public void setNrPessoas(int nrPessoas) {
+		this.nrPessoas = nrPessoas;
+	}
 	public String getStatusModel() {
 		return statusModel;
 	}
@@ -69,11 +94,14 @@ public class ModelReserva {
 		try {
 	    	stm = conn.createStatement();
 	    	if ( STATUS_NEW.equals(this.statusModel) ){
-	    		sql = "insert into reserva (id_reserva, id_sala, nm_responsavel, dt_inicio, dt_termino) " + 
+	    		sql = "insert into reserva (id_reserva, id_sala, nm_responsavel, descricao, cafe, nr_pessoas, dt_inicio, dt_termino) " + 
 		    	    	"values( "
 		    	    	 + this.idReserva + ","
 		    	    	 + this.idSala + ","
 		    	    	 + "'" + this.nmResponsavel + "',"
+		    	    	 + "'" + this.descricao + "',"
+		    	    	 + "'" + this.cafe + "',"
+		    	    	 + "'" + this.nrPessoas + "',"
 		    	    	 + "'" + this.dtInicio + "',"
 		    	    	 + "'" + this.dtTermino + "')";
 	    	} else {
@@ -81,6 +109,9 @@ public class ModelReserva {
 		    	    	"set " + 
 		    	    	ID_SALA + " = " + this.idSala + "," +
 		    	    	NM_RESPONSAVEL + " = '" + this.nmResponsavel + "'," +
+		    	    	DESCRICAO + " = '" + this.descricao + "'," +
+		    	    	CAFE + " = '" + this.cafe + "'," +
+		    	    	NR_PESSOAS + " = " + this.nrPessoas + "," +
 		    	    	DT_INICIO + " = '" + this.dtInicio + "'," +
 		    	    	DT_TERMINO + " = '" + this.dtTermino + "'" +
 		    	    	" where " + ID_RESERVA + " = " + this.idReserva;

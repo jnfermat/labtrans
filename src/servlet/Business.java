@@ -44,7 +44,7 @@ public class Business {
 	}
 	
 	public static JSONArray getReservas(Connection conn) throws SQLException{	
-		String select = "select r.id_reserva, l.id_local, l.nm_local, r.id_sala, s.nm_sala, r.nm_responsavel, r.dt_inicio, r.dt_termino";
+		String select = "select r.id_reserva, l.id_local, l.nm_local, r.id_sala, s.nm_sala, r.nm_responsavel, r.dt_inicio, r.dt_termino, r.cafe, r.descricao, r.nr_pessoas";
     	String from = " from reserva r inner join sala s on (r.id_sala = s.id_sala) inner join local l on (s.id_local = l.id_local)";
 
     	ResultSet rs = Utils.getData( conn, select + from );
@@ -54,7 +54,10 @@ public class Business {
     	Integer idSala = null;
     	Integer idLocal = null;
     	Integer idReserva = null;
+    	Integer nrPessoas = null;
     	String nmResponsavel = null;
+    	String descricao = null;
+    	String cafe = null;
     	String nmSala = null;
     	String nmLocal = null;
     	Timestamp dtInicio = null;
@@ -70,6 +73,9 @@ public class Business {
     		nmResponsavel = rs.getString("nm_responsavel");
     		dtInicio = rs.getTimestamp("dt_inicio");
     		dtTermino = rs.getTimestamp("dt_termino");
+    		descricao = rs.getString("descricao");
+    		cafe = rs.getString("cafe");
+    		nrPessoas = rs.getInt("nr_pessoas");
     		
     		JSONObject jsonObj = new JSONObject();
     		jsonObj.put("idSala", String.valueOf(idSala) );
@@ -77,11 +83,13 @@ public class Business {
     		jsonObj.put("idReserva", String.valueOf(idReserva) );
     		jsonObj.put("nmLocal", nmLocal );
     		jsonObj.put("nmSala", nmSala );
+    		jsonObj.put("descricao", descricao );
+    		jsonObj.put("cafe", cafe );
+    		jsonObj.put("nrPessoas", nrPessoas );
     		jsonObj.put("nmResponsavel", nmResponsavel );
     		jsonObj.put("dtInicio", fmt.format(dtInicio) );
     		jsonObj.put("dtTermino", fmt.format(dtTermino) );
     		jsonArray.add( jsonObj );
-
     	}
 		return jsonArray;
 	}

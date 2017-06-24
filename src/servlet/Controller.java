@@ -74,12 +74,18 @@ public class Controller extends HttpServlet {
     	    		String responsavel = request.getParameter("responsavel");
     	    		String dtIni = request.getParameter("dtIni");
     	    		String dtFim = request.getParameter("dtFim");
+    	    		String cafe = request.getParameter("cafe");
+    	    		String descricao = request.getParameter("descricao");
+    	    		String nrPessoas = request.getParameter("nrPessoas");
     	    		
     	    		ModelReserva modelReserva = new ModelReserva();
     	    		modelReserva.setDtInicio( Timestamp.valueOf(dtIni) );
     	    		modelReserva.setDtTermino( Timestamp.valueOf(dtFim) );
     	    		modelReserva.setIdSala( Integer.parseInt(idSala) );
     	    		modelReserva.setNmResponsavel( responsavel );
+    	    		modelReserva.setDescricao( descricao );
+    	    		modelReserva.setCafe( cafe );
+    	    		modelReserva.setNrPessoas( Integer.parseInt(nrPessoas) );
     	    		
     	    		if ( "write".equals( action ) ){
     	    			modelReserva.setIdReserva( Integer.parseInt(idReserva) );
