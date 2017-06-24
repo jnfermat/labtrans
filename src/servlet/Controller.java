@@ -54,6 +54,8 @@ public class Controller extends HttpServlet {
 	    	if ( action != null ){
 	    		action = action.trim().toLowerCase();
 	    		String what = request.getParameter("what");
+	    		boolean result = true;
+	    		
 	    		if ( "read".equals(action) ){
 	    			if ( "getReservas".equals( what ) ){
 	    	    		jsonArray = Business.getReservas( conn );
@@ -65,8 +67,8 @@ public class Controller extends HttpServlet {
 	    	    	} 
 	    		} else if ( "delete".equals( action ) ){
     	    		String idReserva = request.getParameter("idReserva");
-    	    		boolean result = Business.deleteReserva( conn, idReserva );
-    	    	} else if ( "write".equals( action ) ){
+    	    		result = Business.deleteReserva( conn, idReserva );
+    	    	} else if ( "write".equals( action ) || "insert".equals( action ) ){
     	    		String idReserva = request.getParameter("idReserva");
     	    		String idSala = request.getParameter("idSala");
     	    		String responsavel = request.getParameter("responsavel");
@@ -76,11 +78,18 @@ public class Controller extends HttpServlet {
     	    		ModelReserva modelReserva = new ModelReserva();
     	    		modelReserva.setDtInicio( Timestamp.valueOf(dtIni) );
     	    		modelReserva.setDtTermino( Timestamp.valueOf(dtFim) );
-    	    		modelReserva.setIdReserva( Integer.parseInt(idReserva) );
     	    		modelReserva.setIdSala( Integer.parseInt(idSala) );
     	    		modelReserva.setNmResponsavel( responsavel );
     	    		
-    	    		boolean result = Business.writeReserva( conn, modelReserva );
+    	    		if ( "write".equals( action ) ){
+    	    			modelReserva.setIdReserva( Integer.parseInt(idReserva) );
+    	    			modelReserva.setStatusModel( ModelReserva.STATUS_MODIFED );
+    	    		}else{
+    	    			modelReserva.setIdReserva( ModelReserva.getLastIdReserva(conn) + 1 );
+    	    			modelReserva.setStatusModel( ModelReserva.STATUS_NEW );
+    	    		}
+    	    		
+    	    		result = Business.writeReserva( conn, modelReserva );
     	    		JSONObject jsonObj = new JSONObject();
     				jsonObj.put("sucess", result );
     				jsonArray.add( jsonObj );
@@ -101,12 +110,12 @@ public class Controller extends HttpServlet {
 	    PrintWriter out = response.getWriter();	    
     	response.setContentType("application/json");
     	
-	    if ( action != null && "read".equals(action) ){
-		    out.write( jsonArray.toJSONString() );
-	    } else if ( action != null && "write".equals(action) ){
-		    out.write( jsonArray.get(0).toString() );
+	    if ( action != null ){
+	    	if ( "read".equals(action) )
+	    		out.write( jsonArray.toJSONString() );
+	    	else if ( "delete".equals(action) || "write".equals(action) || "insert".equals(action) )
+	    		out.write( jsonArray.get(0).toString() );
 	    }
-
 		out.close();
 	}
 }

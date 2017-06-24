@@ -42,21 +42,22 @@ $(document).ready(function(e){
 		changeBackground(row_table, '#ffffff');
 		
 		if ( $(this).attr("id") == "btn_save" ){
-			saveReserva();
+			var action = parseInt($('#id_reserva').val()) > 0 ? 'write' : 'insert';
+			saveReserva( action );
 		}
 	});
 	
 	$("#data_edit").hide();
 });
 
-function saveReserva(){
+function saveReserva(action){
 	var idReserva = $("#id_reserva").val();
 	var idSala = $("#salas").val();
 	var responsavel = $("#responsavel").val();
 	var dtIni = $("#year_ini").val() + "-" + $("#month_ini").val() + "-" + $("#day_ini").val() + " " + $("#hr_ini").val() + ":" + $("#min_ini").val() + ":00";
 	var dtFim = $("#year_fim").val() + "-" + $("#month_fim").val() + "-" + $("#day_fim").val() + " " + $("#hr_fim").val() + ":" + $("#min_fim").val() + ":00";
 
-	var dataString = "action=write" + 
+	var dataString = "action=" + action +
 					"&idReserva=" + idReserva +
 					"&idSala=" + idSala +
 					"&responsavel=" + responsavel +
@@ -241,7 +242,10 @@ function executeOperation( operation, id_reserva, row_table ){
 			deleteReserva( id_reserva );
 	} else if ( operation == "edit" || operation == "insert"){
 		$("#data_edit").show();
-		fillDataEdit(id_reserva, row_table);
+		if ( operation == "edit" )
+			fillDataEdit(id_reserva, row_table);
+		else
+			$('#id_reserva').val('0');
 	}
 }
 
