@@ -14,6 +14,7 @@ $(document).ready(function(e){
 	$('#btn_insert').on('click', function(e){	
 		executeOperation( "insert" );
 		$(this).hide();
+		$('#div_nr_pessoas').hide();
 	});	
 	
 	$('#btn_save,#btn_cancel').on('click', function(e){
@@ -51,9 +52,10 @@ $(document).ready(function(e){
 	var cellsFirstRow = firstRow.cells;
 	var cellsSecondRow = secondRow.cells;
 	
-	for(var c=0; c < 6; c++)
+	for(var c=0; c < 6; c++){
 		$(cellsFirstRow[c]).width( $(cellsSecondRow[c]).width() );
-
+	}
+	
 });
 
 function activeEventesDeleteEdit(){
@@ -65,17 +67,16 @@ function activeEventesDeleteEdit(){
 		var row_table = parts[2];
 		var rows = document.getElementById("lista").rows;
 		
-		rows[row_table].style.backgroundColor = '#e0e0eb';
-		
 		$('#btn_insert').hide();
 		$('#id_reserva').val( id_reserva );
 		
-		changeBackground($('#row_table').val(), '#ffffff');
+		changeBackground( $('#row_table').val(), '#ffffff' );
+		changeBackground( row_table, '#e0e0eb' );
 		$('#row_table').val( row_table );
-		changeBackground(row_table, '#e0e0eb');
-		
+
 		executeOperation( operation, id_reserva, row_table );
 	});
+
 }
 
 function clearDataEdit(){
@@ -284,8 +285,14 @@ function executeOperation( operation, id_reserva, row_table ){
 	
 	if ( operation == "delete" ){
 		var result = confirm("Deseja realmente excluir a reserva?");
-		if ( result )
+		if ( result ){
 			deleteReserva( id_reserva );
+			fillReservas();
+			activeEventesDeleteEdit();
+		}else{
+			changeBackground(row_table, '#ffffff');
+		}
+		$('#btn_insert').show();
 	} else if ( operation == "edit" || operation == "insert"){
 		$("#data_edit").show();
 		if ( operation == "edit" )
@@ -423,7 +430,18 @@ function validate(){
 	var idSala = $('#salas').val();
 	var nmResponsavel = $('#responsavel').val();
 	var descricao = $('#descricao').val();
+	var dayIni = $('#day_ini').val();
+	var monthIni = $('#month_ini').val();
+	var yearIni = $('#year_ini').val();
+	var dayFim = $('#day_fim').val();
+	var monthFim = $('#month_fim').val();
+	var yearFim = $('#year_fim').val();
+	var hrIni = $('#horario_ini').val();
+	var hrFim = $('#horario_fim').val();
+	
 	var result = true;
+	var dateIni = new Date(yearIni, monthIni, dayIni, hrIni.substr(0,2), 0, 0);
+	var dateFim = new Date(yearFim, monthFim, dayFim, hrFim.substr(0,2), 0, 0);
 	
 	if ( idSala == null || idSala == "" ){
 		result = false;
@@ -439,6 +457,9 @@ function validate(){
 			result = false;
 			alert("Você deve informar o número de pessoas.");
 		}
+	} else if ( dateFim.getTime() <= dateIni.getTime() ){
+		result = false;
+		alert("Data/hora final da reserva deve ser maior que inicial.");
 	}
 	
 	return result;

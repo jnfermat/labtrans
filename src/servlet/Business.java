@@ -99,7 +99,7 @@ public class Business {
    		int result = 0;
 		try {
 	    	stm = conn.createStatement();
-	    	result = stm.executeUpdate( "delete reservas where id_reserva = " + idReserva );
+	    	result = stm.executeUpdate( "delete from reserva where id_reserva = " + idReserva );
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} 

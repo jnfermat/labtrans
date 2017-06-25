@@ -71,3 +71,7 @@ table {
     border-spacing: 20px 5px;
     border-bottom: 1px solid #000000;
 }
+
+tr:hover{
+	background-color:#e0e0eb;
+}

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Sistema de Reserva de Salas</title>
 	<link type="text/css" rel="stylesheet" href="index.css" />
 	<script type="text/javascript" src="jquery-1.11.2.min.js" /></script>
@@ -15,10 +15,10 @@
 				<tr>
 					<th>Local</th>
 					<th>Sala</th>
-					<th>Responsável pela reserva</th>
-					<th>Início</th>
-					<th>Término</th>
-					<th>Descrição</th>
+					<th>ResponsÃ¡vel pela reserva</th>
+					<th>InÃ­cio</th>
+					<th>TÃ©rmino</th>
+					<th>DescriÃ§Ã£o</th>
 				</tr>
 			</thead>
 		</table>
@@ -36,12 +36,12 @@
 					Sala: <select id="salas"></select>
 				</div>
 				<div class="data-edit">
-					Responsável: <input class="responsavel" type="text" id="responsavel" maxlength=100>
+					ResponsÃ¡vel: <input class="responsavel" type="text" id="responsavel" maxlength=100>
 				</div>
 			</div>
 			<div class="row-data">
 				<div class="data-edit">
-					Início: <select id="day_ini"></select> / <select id="month_ini"></select> / <select id="year_ini"></select>
+					InÃ­cio: <select id="day_ini"></select> / <select id="month_ini"></select> / <select id="year_ini"></select>
 				</div>
 				<div class="data-edit">
 					Hora: <select id="horario_ini"></select>
@@ -49,7 +49,7 @@
 			</div>
 			<div class="row-data">
 				<div class="data-edit">
-					Término: <select id="day_fim"></select> / <select id="month_fim"></select> / <select id="year_fim"></select>
+					TÃ©rmino: <select id="day_fim"></select> / <select id="month_fim"></select> / <select id="year_fim"></select>
 				</div>
 				<div class="data-edit">
 					Hora: <select id="horario_fim"></select>
@@ -57,13 +57,13 @@
 			</div>
 			<div class="row-data">
 				<div class="data-edit">
-					Descrição: <input class="responsavel" type="text" id="descricao" maxlength=100>
+					DescriÃ§Ã£o: <input class="responsavel" type="text" id="descricao" maxlength=100>
 				</div>			
 				<div class="data-edit">
-					<input type="checkbox" id="cafe">Com café
+					<input type="checkbox" id="cafe">Com cafÃ©
 				</div>
 				<div class="data-edit" id="div_nr_pessoas" style="display:none" >
-					N° pessoas: <input type="text" id="nr_pessoas" maxlength=2 value="0">
+					NÂ° pessoas: <input type="text" id="nr_pessoas" maxlength=2 value="0">
 				</div>
 			</div>
 			<div class="save-cancel">

@@ -68,6 +68,9 @@ public class Controller extends HttpServlet {
 	    		} else if ( "delete".equals( action ) ){
     	    		String idReserva = request.getParameter("idReserva");
     	    		result = Business.deleteReserva( conn, idReserva );
+    	    		JSONObject jsonObj = new JSONObject();
+    				jsonObj.put("sucess", result );
+    				jsonArray.add( jsonObj );
     	    	} else if ( "write".equals( action ) || "insert".equals( action ) ){
     	    		String idReserva = request.getParameter("idReserva");
     	    		String idSala = request.getParameter("idSala");
