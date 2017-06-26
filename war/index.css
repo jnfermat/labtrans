@@ -75,3 +75,9 @@ table {
 tr:hover{
 	background-color:#e0e0eb;
 }
+
+#btn_insert{
+	background-color:#00b208;
+	padding:8px;
+	color:#ffffff;
+}

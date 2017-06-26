@@ -9,7 +9,7 @@ $(document).ready(function(e){
 			fillSalas( id_local );
 	});
 	
-	activeEventesDeleteEdit();
+	activeEventsDeleteEdit();
 	
 	$('#btn_insert').on('click', function(e){	
 		executeOperation( "insert" );
@@ -22,11 +22,12 @@ $(document).ready(function(e){
 		changeBackground(row_table, '#ffffff');
 		
 		if ( $(this).attr("id") == "btn_save" ){
-			if ( validate() ){
-				var action = parseInt($('#id_reserva').val()) > 0 ? 'write' : 'insert';
+			var idReserva = parseInt($('#id_reserva').val());
+			var action = idReserva > 0 ? 'write' : 'insert';
+			if ( validate( action, idReserva ) ){
 				saveReserva( action );
 				fillReservas();
-				activeEventesDeleteEdit();
+				activeEventsDeleteEdit();
 			}else{
 				return;
 			}
@@ -44,21 +45,24 @@ $(document).ready(function(e){
 	});
 		
 	$("#data_edit").hide();
-	
+});
+
+function alignColumnTable(){
 	var myTable = document.getElementById('lista');
 	var rows =  myTable.rows;
 	var firstRow = rows[0];
 	var secondRow = rows[1];
-	var cellsFirstRow = firstRow.cells;
-	var cellsSecondRow = secondRow.cells;
 	
-	for(var c=0; c < 6; c++){
-		$(cellsFirstRow[c]).width( $(cellsSecondRow[c]).width() );
+	if ( secondRow != undefined ){
+		var cellsFirstRow = firstRow.cells;
+		var cellsSecondRow = secondRow.cells;
+		
+		for(var c=0; c < 6; c++){
+			$(cellsFirstRow[c]).width( $(cellsSecondRow[c]).width() );
+		}
 	}
-	
-});
-
-function activeEventesDeleteEdit(){
+}
+function activeEventsDeleteEdit(){
 	$('#lista a').on('click', function(e){
 		var id = $(this).attr('id');
 		var parts = id.split('_');
@@ -129,8 +133,8 @@ function saveReserva(action){
 }
 
 function changeBackground(row_table, color){
-	if ( row_table != undefined && row_table != "" ){
-		var rows = document.getElementById("lista").rows;
+	var rows = document.getElementById("lista").rows;
+	if ( row_table != undefined && row_table != "" && row_table < (rows.length - 1) ){
 		rows[row_table].style.backgroundColor = color;		
 	}
 }
@@ -166,6 +170,7 @@ function fillReservas(){
 					        		"<td>" + '<input type="hidden" value="' + data[r].idSala + '">'+ "</td>" +
 					        		"<td>" + '<input type="hidden" value="' + data[r].cafe + '">'+ "</td>" +
 					        		"<td>" + '<input type="hidden" value="' + data[r].nrPessoas + '">'+ "</td>" +
+					        		"<td>" + '<input type="hidden" value="' + data[r].idReserva + '">'+ "</td>" +
 					        		"</tr>" );
         	}
         	
@@ -193,6 +198,7 @@ function fillReservas(){
         }
 
     });
+	alignColumnTable();
 }
 
 function fillLocais(){
@@ -288,7 +294,7 @@ function executeOperation( operation, id_reserva, row_table ){
 		if ( result ){
 			deleteReserva( id_reserva );
 			fillReservas();
-			activeEventesDeleteEdit();
+			activeEventsDeleteEdit();
 		}else{
 			changeBackground(row_table, '#ffffff');
 		}
@@ -353,10 +359,8 @@ function deleteReserva( id_reserva ){
        
         //if received a response from the server
         success: function( data, textStatus, jqXHR) {
-        	if ( data.sucess ){
-        		$('#lista').deleteRow( row_table );
-        	}else{
-        		
+        	if ( !data.sucess ){
+        		alert('Erro da esclusão do registro!');
         	}
         },
        
@@ -426,7 +430,7 @@ function fillPeriodos(){
 	}	
 }
 
-function validate(){
+function validate( action, idReserva ){
 	var idSala = $('#salas').val();
 	var nmResponsavel = $('#responsavel').val();
 	var descricao = $('#descricao').val();
@@ -440,8 +444,8 @@ function validate(){
 	var hrFim = $('#horario_fim').val();
 	
 	var result = true;
-	var dateIni = new Date(yearIni, monthIni, dayIni, hrIni.substr(0,2), 0, 0);
-	var dateFim = new Date(yearFim, monthFim, dayFim, hrFim.substr(0,2), 0, 0);
+	var dateIni = new Date(yearIni, parseInt(monthIni) - 1, dayIni, hrIni.substr(0,2), 0, 0);
+	var dateFim = new Date(yearFim, parseInt(monthFim) - 1, dayFim, hrFim.substr(0,2), 0, 0);
 	
 	if ( idSala == null || idSala == "" ){
 		result = false;
@@ -452,15 +456,39 @@ function validate(){
 	} else if ( descricao == null || descricao == "" ){
 		result = false;
 		alert("Você deve informar a descrição.");
+	} else if ( dateFim.getTime() <= dateIni.getTime() ){
+		result = false;
+		alert("Data/hora final da reserva deve ser maior que inicial.");
+	} else if ( existsReserva(action, dateIni, dateFim, idSala, idReserva) ){
+		result = false;
+		alert("Essa sala já está reserva para outro horário.");
 	} else if ( $('#cafe').is(':checked') ){
 		if ( isNaN($('#nr_pessoas').val()) || (!isNaN($('#nr_pessoas').val()) && parseInt($('#nr_pessoas').val()) == 0) ){
 			result = false;
 			alert("Você deve informar o número de pessoas.");
 		}
-	} else if ( dateFim.getTime() <= dateIni.getTime() ){
-		result = false;
-		alert("Data/hora final da reserva deve ser maior que inicial.");
 	}
 	
 	return result;
+}
+
+function existsReserva(action, pDateIni, pDateFim, pIdSala, pIdReserva){
+	var rows =  document.getElementById('lista').rows;
+	var result = false;
+	
+	for(var r=1; r < rows.length; r++){
+		var dataCells = rows[r].cells;
+		var dInicio = dataCells[3].innerHTML;
+		var dTermino = dataCells[4].innerHTML;
+		var idSala = $(dataCells[9].innerHTML).val();
+		var idReserva = $(dataCells[12].innerHTML).val();
+		var dateIni = new Date(dInicio.substr(6,4), parseInt(dInicio.substr(3,2)) - 1, dInicio.substr(0,2), dInicio.substr(11,2), 0, 0);
+		var dateFim = new Date(dTermino.substr(6,4), parseInt(dTermino.substr(3,2) - 1), dTermino.substr(0,2), dTermino.substr(11,2), 0, 0);
+		
+		if ( pIdSala == idSala && idReserva != pIdReserva && ((dateIni.getTime() <= pDateIni.getTime() && pDateIni.getTime() < dateFim.getTime()) || (dateIni.getTime() < pDateFim.getTime() && pDateFim.getTime() <= dateFim.getTime())) ){
+			result = true;
+			break;
+		}
+	}
+	return result;	
 }
