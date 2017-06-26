@@ -21,6 +21,13 @@ th {
 
 .button{
 	text-decoration:none;
+	background-color:#00b208;
+	padding:8px;
+	color:#ffffff;
+}
+
+.button:hover{
+	background-color:#00dd16;
 }
 
 .data-edit{
@@ -74,10 +81,4 @@ table {
 
 tr:hover{
 	background-color:#e0e0eb;
-}
-
-#btn_insert{
-	background-color:#00b208;
-	padding:8px;
-	color:#ffffff;
 }

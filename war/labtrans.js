@@ -1,6 +1,11 @@
 $(document).ready(function(e){
+	// Exibe lista de reservas 
 	fillReservas();
+	
+	// Inicializa lista de locais
 	fillLocais();
+	
+	// Iniciliaza campos do tipo data
 	fillPeriodos();
 	
 	$('#locais').on('change', function(e){
@@ -19,13 +24,17 @@ $(document).ready(function(e){
 	
 	$('#btn_save,#btn_cancel').on('click', function(e){
 		var row_table = $('#row_table').val();
-		changeBackground(row_table, '#ffffff');
+		changeBackgroundRowTable(row_table, '#ffffff');
 		
 		if ( $(this).attr("id") == "btn_save" ){
 			var idReserva = parseInt($('#id_reserva').val());
 			var action = idReserva > 0 ? 'write' : 'insert';
+			
+			// Valia os dados digitados
 			if ( validate( action, idReserva ) ){
 				saveReserva( action );
+				
+				// Refresh na lista de reservas 
 				fillReservas();
 				activeEventsDeleteEdit();
 			}else{
@@ -34,6 +43,8 @@ $(document).ready(function(e){
 		}
 		$("#data_edit").hide();
 		$('#btn_insert').show();
+		
+		// Limpa os campos de edição
 		clearDataEdit();
 	});
 	
@@ -74,8 +85,8 @@ function activeEventsDeleteEdit(){
 		$('#btn_insert').hide();
 		$('#id_reserva').val( id_reserva );
 		
-		changeBackground( $('#row_table').val(), '#ffffff' );
-		changeBackground( row_table, '#e0e0eb' );
+		changeBackgroundRowTable( $('#row_table').val(), '#ffffff' );
+		changeBackgroundRowTable( row_table, '#e0e0eb' );
 		$('#row_table').val( row_table );
 
 		executeOperation( operation, id_reserva, row_table );
@@ -126,13 +137,12 @@ function saveReserva(action){
         },
        
         error: function(jqXHR, textStatus, errorThrown){
-             console.log("Something really bad happened " + textStatus);
-             alert("Não foi possível salvar os dados!");
+             alert("Erro na gravação da reserva: " + jqXHR.responseText);
         }
     });	
 }
 
-function changeBackground(row_table, color){
+function changeBackgroundRowTable(row_table, color){
 	var rows = document.getElementById("lista").rows;
 	if ( row_table != undefined && row_table != "" && row_table < (rows.length - 1) ){
 		rows[row_table].style.backgroundColor = color;		
@@ -176,28 +186,12 @@ function fillReservas(){
         	
         },
        
-        //If there was no resonse from the server
         error: function(jqXHR, textStatus, errorThrown){
-             console.log("Something really bad happened " + textStatus);
-              //$("#ajaxResponse").html(jqXHR.responseText);
-        },
-       
-        //capture the request before it was sent to server
-        beforeSend: function(jqXHR, settings){
-            //adding some Dummy data to the request
-            settings.data += "&dummyData=whatever";
-            //disable the button until we get the response
-            //$('#myButton').attr("disabled", true);
-        },
-       
-        //this is called after the response or error functions are finsihed
-        //so that we can take some action
-        complete: function(jqXHR, textStatus){
-            //enable the button 
-            //$('#myButton').attr("disabled", false);
+        	alert("Erro na exibição da lista de reservas:" + jqXHR.responseText);
         }
-
     });
+	
+	// Alinha as colunas do cabeçalo com as colunas de dados
 	alignColumnTable();
 }
 
@@ -210,7 +204,6 @@ function fillLocais(){
         data: dataString,
         dataType: "json",
        
-        //if received a response from the server
         success: function( data, textStatus, jqXHR) {
         	$("#locais").append('<option value=""></option>');
         	for(var r = 0; r < data.length; r++){
@@ -218,27 +211,9 @@ function fillLocais(){
         	}
         },
        
-        //If there was no resonse from the server
         error: function(jqXHR, textStatus, errorThrown){
-             console.log("Something really bad happened " + textStatus);
-              //$("#ajaxResponse").html(jqXHR.responseText);
-        },
-       
-        //capture the request before it was sent to server
-        beforeSend: function(jqXHR, settings){
-            //adding some Dummy data to the request
-            settings.data += "&dummyData=whatever";
-            //disable the button until we get the response
-            //$('#myButton').attr("disabled", true);
-        },
-       
-        //this is called after the response or error functions are finsihed
-        //so that we can take some action
-        complete: function(jqXHR, textStatus){
-            //enable the button 
-            //$('#myButton').attr("disabled", false);
+        	alert("Erro na criação da lista de locais: " + jqXHR.responseText);
         }
-
     });
 }
 
@@ -251,7 +226,6 @@ function fillSalas( id_local, id_sala ){
         data: dataString,
         dataType: "json",
        
-        //if received a response from the server
         success: function( data, textStatus, jqXHR) {
         	$("#salas").empty();
         	for(var r = 0; r < data.length; r++){
@@ -263,27 +237,9 @@ function fillSalas( id_local, id_sala ){
         	}
         },
        
-        //If there was no resonse from the server
         error: function(jqXHR, textStatus, errorThrown){
-             console.log("Something really bad happened " + textStatus);
-              //$("#ajaxResponse").html(jqXHR.responseText);
-        },
-       
-        //capture the request before it was sent to server
-        beforeSend: function(jqXHR, settings){
-            //adding some Dummy data to the request
-            settings.data += "&dummyData=whatever";
-            //disable the button until we get the response
-            //$('#myButton').attr("disabled", true);
-        },
-       
-        //this is called after the response or error functions are finsihed
-        //so that we can take some action
-        complete: function(jqXHR, textStatus){
-            //enable the button 
-            //$('#myButton').attr("disabled", false);
+        	alert("Erro na criação da lista de salas: " + jqXHR.responseText);
         }
-
     });
 }
 
@@ -296,15 +252,17 @@ function executeOperation( operation, id_reserva, row_table ){
 			fillReservas();
 			activeEventsDeleteEdit();
 		}else{
-			changeBackground(row_table, '#ffffff');
+			changeBackgroundRowTable(row_table, '#ffffff');
 		}
 		$('#btn_insert').show();
 	} else if ( operation == "edit" || operation == "insert"){
 		$("#data_edit").show();
 		if ( operation == "edit" )
+			// Preenche campos com os dados para edição
 			fillDataEdit(id_reserva, row_table);
 		else{
 			$('#id_reserva').val('0');
+			// Inicializa os campos que tratam das datas
 			setPeriodosInitial();
 		}
 	}
@@ -357,34 +315,15 @@ function deleteReserva( id_reserva ){
         data: dataString,
         dataType: "json",
        
-        //if received a response from the server
         success: function( data, textStatus, jqXHR) {
         	if ( !data.sucess ){
         		alert('Erro da esclusão do registro!');
         	}
         },
        
-        //If there was no resonse from the server
         error: function(jqXHR, textStatus, errorThrown){
-             console.log("Something really bad happened " + textStatus);
-              //$("#ajaxResponse").html(jqXHR.responseText);
-        },
-       
-        //capture the request before it was sent to server
-        beforeSend: function(jqXHR, settings){
-            //adding some Dummy data to the request
-            settings.data += "&dummyData=whatever";
-            //disable the button until we get the response
-            //$('#myButton').attr("disabled", true);
-        },
-       
-        //this is called after the response or error functions are finsihed
-        //so that we can take some action
-        complete: function(jqXHR, textStatus){
-            //enable the button 
-            //$('#myButton').attr("disabled", false);
+             alert("Erro da exclusão da reserva: " + jqXHR.responseText);
         }
-
     });
 }
 

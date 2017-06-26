@@ -134,7 +134,6 @@ public class ModelReserva {
 			if ( rs.next() )
 				result = rs.getInt(1);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	return result;

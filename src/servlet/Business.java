@@ -13,7 +13,7 @@ import org.json.simple.JSONObject;
 public class Business {
 	public static JSONArray getListLocal(Connection conn) throws SQLException{
 		JSONArray jsonArray = new JSONArray();
-		String sql = "select id_local, nm_local from local";
+		String sql = "select id_local, nm_local from local order by id_local";
 		ResultSet rs = Utils.getData( conn, sql );
 		
 		while ( rs.next() ){
@@ -29,7 +29,7 @@ public class Business {
 	
 	public static JSONArray getListSala(Connection conn, String id_local) throws SQLException{
 		JSONArray jsonArray = new JSONArray();
-		String sql = "select id_sala, nm_sala from sala s inner join local l on (l.id_local = s.id_local) where l.id_local = " + id_local;
+		String sql = "select id_sala, nm_sala from sala s inner join local l on (l.id_local = s.id_local) where l.id_local = " + id_local + " order by id_sala";
 		ResultSet rs = Utils.getData( conn, sql );
 		
 		while ( rs.next() ){
