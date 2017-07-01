@@ -46,17 +46,19 @@ public class Controller extends HttpServlet {
 	{ 
 		String action = request.getParameter("action");
 
-	    Connection conn = Utils.getMySqlConnection(); 
+		String projectPath = request.getServletContext().getRealPath("");
+	    Connection conn = Utils.getMySqlConnection( projectPath ); 
    		JSONArray jsonArray = new JSONArray();
 
 	    try 
 	    {
 	    	if ( action != null ){
 	    		action = action.trim().toLowerCase();
-	    		String what = request.getParameter("what");
+	    		
 	    		boolean result = true;
 	    		
 	    		if ( "read".equals(action) ){
+	    			String what = request.getParameter("what");
 	    			if ( "getReservas".equals( what ) ){
 	    	    		jsonArray = Business.getReservas( conn );
 	    	    	} else if ( "getListLocal".equals( what ) ){

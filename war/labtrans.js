@@ -1,3 +1,5 @@
+var data_array=[];
+
 $(document).ready(function(e){
 	// Exibe lista de reservas 
 	fillReservas();
@@ -165,7 +167,7 @@ function fillReservas(){
         	for(var i=document.getElementById("lista").rows.length - 1; i > 0; i--){
         		document.getElementById("lista").deleteRow(i);
         	}
-
+        	data_array=[];
         	for(var r = 0; r < data.length; r++){
         		$("#lista").append( "<tr>" + 
 					        		"<td>" + data[r].nmLocal + "</td>" +
@@ -176,12 +178,8 @@ function fillReservas(){
 					        		"<td>" + data[r].descricao + "</td>" +
 					        		"<td><a href='#'" + " id='delete_" + data[r].idReserva + "_" + (r+1) + "'><img src='images/icons/delete.png' width=12></a></td>" +
 					        		"<td><a href='#'" + " id='edit_" + data[r].idReserva  + "_" + (r+1) + "'><img src='images/icons/edit.png' width=12></a></td>" +
-					        		"<td>" + '<input type="hidden" value="' + data[r].idLocal + '">'+ "</td>" +
-					        		"<td>" + '<input type="hidden" value="' + data[r].idSala + '">'+ "</td>" +
-					        		"<td>" + '<input type="hidden" value="' + data[r].cafe + '">'+ "</td>" +
-					        		"<td>" + '<input type="hidden" value="' + data[r].nrPessoas + '">'+ "</td>" +
-					        		"<td>" + '<input type="hidden" value="' + data[r].idReserva + '">'+ "</td>" +
 					        		"</tr>" );
+        		data_array[r] = [data[r].idLocal, data[r].idSala, data[r].cafe, data[r].nrPessoas, data[r].idReserva];
         	}
         	
         },
@@ -270,8 +268,8 @@ function executeOperation( operation, id_reserva, row_table ){
 
 function fillDataEdit( id_reserva, row_table ){
 	var rows = document.getElementById("lista").rows;
-	var idLocal = $(rows[row_table].cells[8].innerHTML).val();
-	var idSala = $(rows[row_table].cells[9].innerHTML).val();
+	var idLocal = data_array[row_table - 1][0];
+	var idSala = data_array[row_table - 1][1];
 	
 	$('#locais').val( idLocal );
 	fillSalas( idLocal, idSala );
@@ -280,8 +278,8 @@ function fillDataEdit( id_reserva, row_table ){
 	var dtInicio = rows[row_table].cells[3].innerHTML;
 	var dtTermino = rows[row_table].cells[4].innerHTML;
 	var descricao = rows[row_table].cells[5].innerHTML;
-	var cafe = $(rows[row_table].cells[10].innerHTML).val();
-	var nrPessoas = $(rows[row_table].cells[11].innerHTML).val();
+	var cafe = data_array[row_table - 1][2];
+	var nrPessoas = data_array[row_table - 1][3];
 	
 	$('#descricao').val( descricao );
 	$('#responsavel').val( responsavel );
@@ -419,8 +417,8 @@ function existsReserva(action, pDateIni, pDateFim, pIdSala, pIdReserva){
 		var dataCells = rows[r].cells;
 		var dInicio = dataCells[3].innerHTML;
 		var dTermino = dataCells[4].innerHTML;
-		var idSala = $(dataCells[9].innerHTML).val();
-		var idReserva = $(dataCells[12].innerHTML).val();
+		var idSala = data_array[r - 1][1];
+		var idReserva = data_array[r - 1][4];
 		var dateIni = new Date(dInicio.substr(6,4), parseInt(dInicio.substr(3,2)) - 1, dInicio.substr(0,2), dInicio.substr(11,2), 0, 0);
 		var dateFim = new Date(dTermino.substr(6,4), parseInt(dTermino.substr(3,2) - 1), dTermino.substr(0,2), dTermino.substr(11,2), 0, 0);
 		
